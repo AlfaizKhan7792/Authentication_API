@@ -7,11 +7,11 @@ const bcrypt = require("bcryptjs");
 const Register = expressAsyncHandler(async (req, res) => {
     const { name, phone, email, password } = req.body;
 
-    // Check if all fields are provided
-    if (!name || !phone || !email || !password) {
-        res.status(400);
-        throw new Error("Please Fill All Details!!");
-    }
+    // // Check if all fields are provided
+    // if (!name || !phone || !email || !password) {
+    //     res.status(400);
+    //     throw new Error("Please Fill All Details!!");
+    // }
 
     // Validate phone number
     if (phone.length !== 10) {
@@ -44,7 +44,7 @@ const Register = expressAsyncHandler(async (req, res) => {
             name: user.name,
             phone: user.phone,
             email: user.email,
-            admin: user.isAdmin,
+            // admin: user.isAdmin,
             token: generateToken(user._id),
         });
     }

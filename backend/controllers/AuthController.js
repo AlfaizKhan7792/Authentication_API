@@ -34,7 +34,7 @@ const Register = expressAsyncHandler(async (req, res) => {
 
     // Create User
     const user = await Auth.create({ name, phone, email, password: hashedPassword });
-
+console.log(user);
     if(!user) {
         res.status(400);
         throw new Error("User Not Registered!!");

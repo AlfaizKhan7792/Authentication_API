@@ -1,4 +1,4 @@
-const { mongoose, model } = require("mongoose");
+const { mongoose } = require("mongoose");
 
 const AuthSchema = new mongoose.Schema({
     name : {
@@ -12,7 +12,8 @@ const AuthSchema = new mongoose.Schema({
     },
     email : {
         type : String,
-        required : true
+        required : true,
+        unique : true
     },
     password : {
         type : String,
@@ -24,7 +25,7 @@ const AuthSchema = new mongoose.Schema({
         default : false,
     }
 },{
-    timeStamps : true
+    timestamps : true
 })
 
 

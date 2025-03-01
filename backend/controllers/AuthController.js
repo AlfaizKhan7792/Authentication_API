@@ -1,17 +1,18 @@
 const expressAsyncHandler = require("express-async-handler");
-const Auth = require("../models/AuthSchema");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const Auth = require("../models/AuthSchema");
 
 // Register User
 const Register = expressAsyncHandler(async (req, res) => {
-    const { name, phone, email, password } = req.body;
+    const {name, phone, email, password } = req.body;
+    console.log(req.body);
 
-    // // Check if all fields are provided
-    // if (!name || !phone || !email || !password) {
-    //     res.status(400);
-    //     throw new Error("Please Fill All Details!!");
-    // }
+    // Check if all fields are provided
+    if(!name || !phone || !email || !password) {
+        res.status(400);
+        throw new Error("Please Fill All Details!!");
+    }
 
     // Validate phone number
     if(phone?.length !== 10) {
@@ -31,6 +32,7 @@ const Register = expressAsyncHandler(async (req, res) => {
     // Hash Password
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(password, salt);
+    console.log(hashedPassword);
 
     // Create User
     const user = await Auth.create({ name, phone, email, password: hashedPassword });
@@ -44,7 +46,7 @@ console.log(user);
             name: user.name,
             phone: user.phone,
             email: user.email,
-            // admin: user.isAdmin,
+            admin: user.isAdmin,
             token: generateToken(user._id),
         });
     }
@@ -65,7 +67,7 @@ const Login = expressAsyncHandler(async (req, res) => {
         res.status(200).json({
             id: user._id,
             email: user.email,
-            // admin: user.isAdmin,
+            admin: user.isAdmin,
             token: generateToken(user._id),
         });
     }else {
@@ -81,6 +83,7 @@ const PrivateController = async (req, res) => {
 
 // Generate Token
 const generateToken = (id) => {
+    console.log(id);
     return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "30d" });
 };
 

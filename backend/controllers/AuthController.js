@@ -74,6 +74,7 @@ const Login = expressAsyncHandler(async (req, res) => {
         res.status(401);
         throw new Error("Invalid Email or Password");
     }
+    console.log(response);
 });
 
 // Private Route

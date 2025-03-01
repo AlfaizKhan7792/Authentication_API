@@ -14,31 +14,31 @@ const Register = expressAsyncHandler(async (req, res) => {
     // }
 
     // Validate phone number
-    if (phone.length !== 10) {
+    if(phone?.length !== 10) {
         res.status(400);
         throw new Error("Enter a Valid Phone Number!!");
     }
 
     // Check if user already exists
-    const emailExist = await Auth.findOne({ email });
-    const phoneExist = await Auth.findOne({ phone });
+    const emailExist = await Auth.findOne({ email : email });
+    const phoneExist = await Auth.findOne({ phone : phone });
 
-    if (emailExist || phoneExist) {
+    if(emailExist || phoneExist) {
         res.status(403);
         throw new Error("User Already Exists || Enter a Unique Number");
     }
 
     // Hash Password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const salt = bcrypt.genSaltSync(10);
+    const hashedPassword = bcrypt.hashSync(password, salt);
 
     // Create User
     const user = await Auth.create({ name, phone, email, password: hashedPassword });
 
-    if (!user) {
+    if(!user) {
         res.status(400);
         throw new Error("User Not Registered!!");
-    } else {
+    }else {
         res.status(201).json({
             id: user._id,
             name: user.name,
@@ -54,21 +54,21 @@ const Register = expressAsyncHandler(async (req, res) => {
 const Login = expressAsyncHandler(async (req, res) => {
     const { email, password } = req.body;
 
-    if (!email || !password) {
+    if(!email || !password) {
         res.status(400);
         throw new Error("Please Fill Details!!");
     }
 
     const user = await Auth.findOne({ email });
 
-    if (user && (await bcrypt.compare(password, user.password))) {
+    if(user && await bcrypt.compare(password, user.password)) {
         res.status(200).json({
             id: user._id,
             email: user.email,
-            admin: user.isAdmin,
+            // admin: user.isAdmin,
             token: generateToken(user._id),
         });
-    } else {
+    }else {
         res.status(401);
         throw new Error("Invalid Email or Password");
     }
@@ -80,8 +80,8 @@ const PrivateController = async (req, res) => {
 };
 
 // Generate Token
-const generateToken = (_id) => {
-    return jwt.sign({ _id }, process.env.JWT_SECRET, { expiresIn: "30d" });
+const generateToken = (id) => {
+    return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "30d" });
 };
 
 module.exports = { Register, Login, PrivateController };

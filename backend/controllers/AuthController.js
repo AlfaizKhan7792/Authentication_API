@@ -66,6 +66,8 @@ const Login = expressAsyncHandler(async (req, res) => {
     if(user && await bcrypt.compare(password, user.password)) {
         res.status(200).json({
             id: user._id,
+            name : user.name,
+            phone : user.phone,
             email: user.email,
             admin: user.isAdmin,
             token: generateToken(user._id),

@@ -1,12 +1,37 @@
 const express = require('express');
 const connectDB = require('./config/db_config');
 const MiddleWere = require('./middleWere/ErrorHandler');
+const cors = require("cors")
 require("dotenv").config()
 
 const app = express()
 
 // DB Connection
 connectDB()
+
+
+// Enable Public CORS
+app.use(cors({
+    origin: "*",
+    methods: "GET, POST, PUT, DELETE, OPTIONS",
+    allowedHeaders: "Content-Type, Authorization"
+}));
+
+
+
+// Handle Preflight Requests
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    
+    if (req.method === "OPTIONS") {
+        return res.sendStatus(200);
+    }
+    
+    next();
+});
+
 
 // Body Parser
 app.use(express.json())
